@@ -7,8 +7,19 @@
 
 class Cord {
 public:
-     Cord(std::string_view sv);
-     ~Cord();
+    Cord(std::string_view sv) {
+        if (sv.size() == 0) {
+            throw std::invalid_argument("String view cannot be empty");
+        }
+        length_ = sv.size();
+        data_ = new char[length_ + 1];
+        std::memcpy(data_, sv.data(), length_);
+        data_[length_] = '\0';
+    }
+
+    ~Cord() {
+        delete[] data_;
+    }
      SharedPointer<char> ToString() const;
 
     // Provided, do not modify!
@@ -29,6 +40,10 @@ private:
     // friend functions
     friend SharedPointer<Cord> ConcatCords(SharedPointer<Cord> left_cord,
                                            SharedPointer<Cord> right_cord);
+    friend SharedPointer<Cord> ConcatCords(SharedPointer<Cord> left_cord,
+                                           SharedPointer<Cord> right_cord);
+    friend SharedPointer<Cord> SubString(SharedPointer<Cord> curr_cord,
+                                         unsigned int lower_idx, unsigned int upper_idx);
 };
 
 #endif
